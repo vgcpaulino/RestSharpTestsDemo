@@ -12,6 +12,19 @@
 *.map
 *.exp
 
+# Build results
+#[Dd]ebug/
+#[Dd]ebugPublic/
+#[Rr]elease/
+#[Rr]eleases/
+#x64/
+#x86/
+#bld/
+[Bb]in/
+[Oo]bj/
+[Pp]ackages
+#[Ll]og/
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -52,4 +65,4 @@ Mkfile.old
 dkms.conf
 
 # The packages folder can be ignored because of Package Restore
-**/[Pp]ackages/*
+#**/[Pp]ackages/*
