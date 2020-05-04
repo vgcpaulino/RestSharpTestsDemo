@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace RestSharpTestsDemo.Helpers
 {
@@ -18,6 +14,17 @@ namespace RestSharpTestsDemo.Helpers
         {
             return JsonConvert.DeserializeObject(jsonString);
         }
-        
+
+        public string ConvertObjToJson(dynamic jsonObj)
+        {
+            string result = JsonConvert.SerializeObject(jsonObj);
+            return result;
+        } 
+
+        public JObject ConvertJsonStrToJObject(dynamic json)
+        {
+            return JObject.Parse(ConvertObjToJson(json));
+        }
+
     }
 }

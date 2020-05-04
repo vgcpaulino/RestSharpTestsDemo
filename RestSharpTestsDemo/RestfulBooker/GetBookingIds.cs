@@ -1,10 +1,6 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RestSharp;
 using RestSharpTestsDemo.Helpers;
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RestSharpTestsDemo.RestfulBooker
@@ -19,7 +15,6 @@ namespace RestSharpTestsDemo.RestfulBooker
         public string responseBody;
         public int numericStatusCode;
         private readonly ResponseParser parser;
-        private readonly JsonOps jsonOps;
 
         public GetBookingIds()
         {
@@ -27,7 +22,6 @@ namespace RestSharpTestsDemo.RestfulBooker
             restClient = new RestClient($"{APIurl}");
 
             parser = new ResponseParser();
-            jsonOps = new JsonOps();
         }
 
         [Test]
@@ -52,7 +46,6 @@ namespace RestSharpTestsDemo.RestfulBooker
             Assert.Greater(qtyRootItems, 0);
             Assert.AreEqual(200, numericStatusCode);
         }
-
 
     }
 }
