@@ -69,7 +69,6 @@
     <Compile Include="RestfulBooker\GetBookingIds.cs" />
     <Compile Include="RestfulBooker\PingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RestfulBooker\RequestObject.cs" />
     <Compile Include="RestfulBooker\UpdateBookingTests.cs" />
   </ItemGroup>
   <ItemGroup>
