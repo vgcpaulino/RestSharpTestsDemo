@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using RestSharp;
 using RestSharpTestsDemo.Helpers;
 using System;
@@ -9,25 +10,25 @@ namespace RestSharpTestsDemo.RestfulBooker
     {
 
         private const string APIurl = "https://restful-booker.herokuapp.com/booking";
+
         private readonly RestClient restClient;
         private RestRequest restRequest;
         private IRestResponse restResponse;
-        private string responseBody;
-        private int numericStatusCode;
+
+        private readonly JsonOps json;
         private readonly ResponseParser parser;
-        private readonly JsonOps jsonOps;
-        private readonly Object jsonBody;
-        private readonly string stringBody;
+
+        private int responseStatusCode; 
+        private readonly object requestJsonObj;
+        private readonly string requestJsonStr;
+        private JObject responseJObject;
 
         public CreatingBookingTests()
         {
-            // Set the base URL;
-            restClient = new RestClient($"{APIurl}");
-
             parser = new ResponseParser();
-            jsonOps = new JsonOps();
+            json = new JsonOps();
 
-            jsonBody = new
+            requestJsonObj = new
             {
                 firstname = "John",
                 lastname = "Doe",
@@ -40,7 +41,10 @@ namespace RestSharpTestsDemo.RestfulBooker
                 },
                 additionalneeds = "Breakfast"
             };
-            stringBody = jsonOps.ConvertObjToJson(jsonBody);
+            requestJsonStr = json.ObjToString(requestJsonObj);
+
+            // Set the base URL;
+            restClient = new RestClient($"{APIurl}");
         }
 
         [Test]
@@ -53,18 +57,15 @@ namespace RestSharpTestsDemo.RestfulBooker
             restRequest.AddHeader("Content-Type", "application/json");
                       
             // Set the Body info;
-            restRequest.AddParameter("application/json,text/plain", stringBody, ParameterType.RequestBody);
+            restRequest.AddParameter("application/json,text/plain", requestJsonStr, ParameterType.RequestBody);
 
             // Call the API;
             restResponse = restClient.Execute(restRequest);
-
-            // Get the "Body" content and "Status Code";
-            responseBody = restResponse.Content;
-            numericStatusCode = parser.GetStatusCode(restResponse);
-
+            
             // Verify the "Body" and "Status Code";
-            Assert.That(!responseBody.Contains("bookingid"));
-            Assert.AreEqual(418, numericStatusCode);
+            responseStatusCode = parser.GetStatusCode(restResponse);
+            Assert.AreEqual(418, responseStatusCode);
+            Assert.That(!restResponse.Content.Contains("bookingid"));
         }
 
         [Test]
@@ -78,18 +79,18 @@ namespace RestSharpTestsDemo.RestfulBooker
             restRequest.AddHeader("Accept", "*/*");
 
             // Set the Body info;
-            restRequest.AddParameter("application/json,text/plain", stringBody, ParameterType.RequestBody);
+            restRequest.AddParameter("application/json,text/plain", requestJsonStr, ParameterType.RequestBody);
 
             // Call the API;
             restResponse = restClient.Execute(restRequest);
 
-            // Get the "Body" content and "Status Code";
-            responseBody = restResponse.Content;
-            numericStatusCode = parser.GetStatusCode(restResponse);
-
             // Verify the "Body" and "Status Code";
-            Assert.That(responseBody.Contains("bookingid"));
-            Assert.AreEqual(200, numericStatusCode);
+            responseStatusCode = parser.GetStatusCode(restResponse);
+            Assert.AreEqual(200, responseStatusCode);
+
+            responseJObject = json.StrToJObject(restResponse.Content);
+            string bookingIdValue = (string)responseJObject["bookingid"];
+            Assert.IsNotNull(bookingIdValue);
         }
 
     }

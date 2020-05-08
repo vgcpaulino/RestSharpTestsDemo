@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using RestSharp;
+using RestSharp.Extensions;
 using RestSharpTestsDemo.Helpers;
 
 namespace RestSharpTestsDemo.RestfulBooker
@@ -8,19 +10,31 @@ namespace RestSharpTestsDemo.RestfulBooker
     {
 
         private const string APIurl = "https://restful-booker.herokuapp.com/auth";
+
         private readonly RestClient restClient;
         private RestRequest restRequest;
         private IRestResponse restResponse;
-        private string responseBody;
-        private int numericStatusCode;
+
+        private readonly JsonOps json;
         private readonly ResponseParser parser;
 
+        private readonly object requestJsonObj;
+        private int numericStatusCode;
+        private JObject responseJObject;
+        
         public AuthenticationTests()
         {
-            // Set the base URL;
-            restClient = new RestClient($"{APIurl}");
-
+            json = new JsonOps();
             parser = new ResponseParser();
+
+            requestJsonObj = new
+            {
+                username = "admin",
+                password = "password123"
+            };
+
+            // Set the base URL;
+            restClient = new RestClient($"{APIurl}");           
         }
 
         [Test]
@@ -33,18 +47,18 @@ namespace RestSharpTestsDemo.RestfulBooker
             restRequest.AddHeader("Content-Type", "application/json");
 
             // Set the Parameters info;
-            restRequest.AddJsonBody(new { username = "admin", password = "password123" });
+            restRequest.AddJsonBody(requestJsonObj);
 
             // Call the API;
             restResponse = restClient.Execute(restRequest);
 
-            // Get the "Body" content and "Status Code";
-            responseBody = restResponse.Content;
-            numericStatusCode = parser.GetStatusCode(restResponse);
-
             // Verify the "Body" and "Status Code";
-            Assert.That(responseBody.Contains("\"token\""));
+            numericStatusCode = parser.GetStatusCode(restResponse);
             Assert.AreEqual(200, numericStatusCode);
+
+            responseJObject = json.StrToJObject(restResponse.Content);
+            string token = (string)responseJObject["token"];
+            Assert.IsNotNull(token);
         }
 
         [Test]
@@ -56,19 +70,19 @@ namespace RestSharpTestsDemo.RestfulBooker
             // Set the Header info;
             restRequest.AddHeader("Content-Type", "application/json");
 
-            // Set the Parameters info;
+            // Set the Parameters info;            
             restRequest.AddJsonBody(new { username = "admin", password = "password12" });
 
             // Call the API;
-            restResponse = restClient.Execute(restRequest);
-
-            // Get the "Body" content and "Status Code";
-            responseBody = restResponse.Content;
-            numericStatusCode = parser.GetStatusCode(restResponse);
+            restResponse = restClient.Execute(restRequest);         
 
             // Verify the "Body" and "Status Code";
-            Assert.That(responseBody.Contains("{\"reason\":\"Bad credentials\"}"));
+            numericStatusCode = parser.GetStatusCode(restResponse);
             Assert.AreEqual(200, numericStatusCode);
+
+            responseJObject = json.StrToJObject(restResponse.Content);
+            string responseMessage = (string)responseJObject["reason"];
+            Assert.AreEqual("Bad credentials", responseMessage);          
         }
 
         [Test]
@@ -83,13 +97,13 @@ namespace RestSharpTestsDemo.RestfulBooker
             // Call the API;
             restResponse = restClient.Execute(restRequest);
 
-            // Get the "Body" content and "Status Code";
-            responseBody = restResponse.Content;
-            numericStatusCode = parser.GetStatusCode(restResponse);
-
             // Verify the "Body" and "Status Code";
-            Assert.That(responseBody.Contains("{\"reason\":\"Bad credentials\"}"));
+            numericStatusCode = parser.GetStatusCode(restResponse);
             Assert.AreEqual(200, numericStatusCode);
+
+            responseJObject = json.StrToJObject(restResponse.Content);
+            string responseMessage = (string)responseJObject["reason"];
+            Assert.AreEqual("Bad credentials", responseMessage);            
         }
 
     }

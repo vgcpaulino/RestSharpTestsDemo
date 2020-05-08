@@ -8,19 +8,21 @@ namespace RestSharpTestsDemo.RestfulBooker
     {
 
         private const string APIurl = "https://restful-booker.herokuapp.com/ping";
+
         private readonly RestClient restClient;
         private RestRequest restRequest;
         private IRestResponse restResponse;
-        private string responseBody;
-        private int numericStatusCode;
+        
         private readonly ResponseParser parser;
+        
+        private int numericStatusCode;
 
         public PingTests()
         {
-            // Set the base URL;
-            restClient = new RestClient($"{APIurl}");
-
             parser = new ResponseParser();
+
+            // Set the base URL;
+            restClient = new RestClient($"{APIurl}");            
         }
 
         [Test]
@@ -32,13 +34,11 @@ namespace RestSharpTestsDemo.RestfulBooker
             // Call the API;
             restResponse = restClient.Execute(restRequest);
 
-            // Get the "Body" content and "Status Code";
-            responseBody = restResponse.Content;
-            numericStatusCode = parser.GetStatusCode(restResponse);
-
             // Verify the "Body" and "Status Code";
-            Assert.AreEqual("Created", responseBody);
-            Assert.AreEqual(201, numericStatusCode);
+            numericStatusCode = parser.GetStatusCode(restResponse);
+            Assert.AreEqual(201, numericStatusCode); 
+            
+            Assert.AreEqual("Created", restResponse.Content);
         }
 
     }

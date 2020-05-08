@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using RestSharp;
 using RestSharpTestsDemo.Helpers;
 using System.Text.RegularExpressions;
@@ -9,19 +10,22 @@ namespace RestSharpTestsDemo.RestfulBooker
     {
 
         private const string APIurl = "https://restful-booker.herokuapp.com/booking";
+
         private readonly RestClient restClient;
         private RestRequest restRequest;
         public IRestResponse restResponse;
-        public string responseBody;
-        public int numericStatusCode;
+        
         private readonly ResponseParser parser;
 
+        public int numericStatusCode;
+        public string responseBody;
+       
         public GetBookingIds()
         {
-            // Set the base URL;
-            restClient = new RestClient($"{APIurl}");
-
             parser = new ResponseParser();
+            
+            // Set the base URL;
+            restClient = new RestClient($"{APIurl}");            
         }
 
         [Test]
@@ -37,14 +41,13 @@ namespace RestSharpTestsDemo.RestfulBooker
             // Call the API;
             restResponse = restClient.Execute(restRequest);
 
-            // Get the "Body" content and "Status Code";
-            responseBody = restResponse.Content;
-            numericStatusCode = parser.GetStatusCode(restResponse);
-            int qtyRootItems = Regex.Matches(responseBody, "\"bookingid\"").Count;
-            
             // Verify the "Body" and "Status Code";
-            Assert.Greater(qtyRootItems, 0);
+            numericStatusCode = parser.GetStatusCode(restResponse); 
             Assert.AreEqual(200, numericStatusCode);
+            
+            responseBody = restResponse.Content;
+            int qtyRootItems = Regex.Matches(responseBody, "\"bookingid\"").Count; 
+            Assert.Greater(qtyRootItems, 0);            
         }
 
     }
