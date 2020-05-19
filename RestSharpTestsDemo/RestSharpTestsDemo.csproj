@@ -67,7 +67,8 @@
     <Compile Include="RestfulBooker\AuthenticationTests.cs" />
     <Compile Include="RestfulBooker\CreateBookingTests.cs" />
     <Compile Include="RestfulBooker\DataGenerator.cs" />
-    <Compile Include="RestfulBooker\GetBookingIds.cs" />
+    <Compile Include="RestfulBooker\DeleteBookingTests.cs" />
+    <Compile Include="RestfulBooker\GetBookingIdsTests.cs" />
     <Compile Include="RestfulBooker\PartialUpdateBookingTests.cs" />
     <Compile Include="RestfulBooker\PingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

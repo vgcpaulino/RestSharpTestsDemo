@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace RestSharpTestsDemo.RestfulBooker
 {
-    public class GetBookingIds
+    public class GetBookingIdsTests
     {
 
         private const string APIurl = "https://restful-booker.herokuapp.com/booking";
@@ -20,7 +20,7 @@ namespace RestSharpTestsDemo.RestfulBooker
         public int numericStatusCode;
         public string responseBody;
        
-        public GetBookingIds()
+        public GetBookingIdsTests()
         {
             parser = new ResponseParser();
             

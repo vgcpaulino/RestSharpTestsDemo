@@ -37,7 +37,7 @@ namespace RestSharpTestsDemo.RestfulBooker
             parser = new ResponseParser();
             testData = new DataGenerator();
 
-            newBookingId = testData.newBookingId;
+            newBookingId = testData.GetNewBooking();
             bookingReqObj = testData.jsonBodyObj;
             expectedJOject = json.ObjToJObject(bookingReqObj);
 
