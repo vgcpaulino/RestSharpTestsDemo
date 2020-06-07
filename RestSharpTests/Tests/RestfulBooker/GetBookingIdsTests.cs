@@ -7,35 +7,29 @@ using Xunit;
 
 namespace RestSharpTests.Tests.RestfulBooker
 {
-    public class GetBookingIdsTests
-    {
-        private const string APIurl = "https://restful-booker.herokuapp.com/booking"; 
-        
-        private readonly APIClient client;
-
+    public class GetBookingIdsTests : BaseTests
+    {        
         public GetBookingIdsTests()
         {
-            client = new APIClient();
-            
             // Set the API endpoint and request method;
-            client.Url = APIurl;
-            client.Method = "GET";
+            HttpClient.Url = TestUrl.Booking;
+            HttpClient.Method = "GET";
 
             // Set the Header information;
-            client.AddHeader("Content-Type", "application/json");
-            client.AddHeader("Accept", "application/json");
+            HttpClient.AddHeader("Content-Type", "application/json");
+            HttpClient.AddHeader("Accept", "application/json");
         }
 
         [Fact]
         public void GetAllBookingIds()
         {
             // Execute the API request;
-            client.Execute();
+            HttpClient.Execute();
 
             // Verification;
-            Assert.Equal(200, client.ResponseStatusCode);
-            Assert.Equal("OK", client.ResponseStatusMsg);
-            int qtyRootItems = Regex.Matches(client.ResponseContent, "\"bookingid\"").Count;
+            Assert.Equal(200, HttpClient.ResponseStatusCode);
+            Assert.Equal("OK", HttpClient.ResponseStatusMsg);
+            int qtyRootItems = Regex.Matches(HttpClient.ResponseContent, "\"bookingid\"").Count;
             Assert.True(qtyRootItems > 0);
         }
     }

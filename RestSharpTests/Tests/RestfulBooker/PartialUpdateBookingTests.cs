@@ -6,50 +6,39 @@ using Xunit;
 
 namespace RestSharpTests.Tests.RestfulBooker
 {
-    public class PartialUpdateBookingTests
+    public class PartialUpdateBookingTests : BaseTests
     {
-
-        private const string APIurl = "https://restful-booker.herokuapp.com/booking";
-        private readonly APIClient client;
-        private Booking booking;
-        private Booking expectedBookingObj;
         private readonly DataGenerator testData;
-
-        private readonly CompareHelper compare;
 
         public PartialUpdateBookingTests()
         {
-            client = new APIClient();
             testData = new DataGenerator();
-            compare = new CompareHelper();
+            
+            // Test Info;
+            HttpClient.Url = TestUrl.BookingWithId(testData.BookingId);
+            HttpClient.Method = "PATCH";
 
+            HttpClient.AddHeader("Accept", "application/json");
+            HttpClient.AddHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=");
 
-            client.Url = $"{APIurl}/{testData.BookingId}";
-            client.Method = "PATCH";
-
-            client.AddHeader("Accept", "application/json");
-            client.AddHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=");
-
-            booking = new Booking();
-            booking.AdditionalNeeds = "Dinner";
-
+            BookingModel.AdditionalNeeds = "Dinner";
         }
 
         [Fact]
         public void UpdateBooking_Auth_UsingAddJsonBodyMethod_PATCH()
         {
-            client.AddJsonBody(booking);
+            HttpClient.AddJsonBody(BookingModel);
 
-            client.Execute();
+            HttpClient.Execute();
 
-            Assert.Equal(200, client.ResponseStatusCode);
-            Assert.Equal("OK", client.ResponseStatusMsg);
+            Assert.Equal(200, HttpClient.ResponseStatusCode);
+            Assert.Equal("OK", HttpClient.ResponseStatusMsg);
 
-            // Creating the expected booking object;
-            expectedBookingObj = testData.booking;
-            expectedBookingObj.AdditionalNeeds = booking.AdditionalNeeds;
+            // Creating the expected BookingModel object;
+            Booking expectedBookingObj = testData.bookingModel;
+            expectedBookingObj.AdditionalNeeds = BookingModel.AdditionalNeeds;
 
-            bool rightResponseJson = compare.CompareTwoJObjects(expectedBookingObj, client.ResponseContent);
+            bool rightResponseJson = Compare.CompareTwoJObjects(expectedBookingObj, HttpClient.ResponseContent);
             Assert.True(rightResponseJson);
         }
 

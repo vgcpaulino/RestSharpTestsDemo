@@ -1,22 +1,20 @@
 ﻿using RestSharpTests.ClientHelper;
 using RestSharpTests.Entities.RestfulBooker;
 using RestSharpTests.Helpers;
+using RestSharpTests.Tests;
 
 namespace RestSharpTestsDemo.RestfulBooker
 {
     public class DataGenerator
     {
-
-        private readonly APIClient client;        
         private readonly ResponseSearch responseSearch;
         
-        public Booking booking;
+        public Booking bookingModel;
         public int BookingId { get; internal set; }
         public string Token { get; internal set; }
 
         public DataGenerator()
         {
-            client = new APIClient();
             responseSearch = new ResponseSearch();
 
             Token = GetTokenId();
@@ -34,16 +32,16 @@ namespace RestSharpTestsDemo.RestfulBooker
             client.AddHeader("Content-Type", "application/json");
             client.AddHeader("Accept", "*/*");
 
-            booking = new Booking();
-            booking.FirstName = "John";
-            booking.LastName = "Doe";
-            booking.TotalPrice = 1110;
-            booking.DepositPaid = true;
-            booking.BookingDates.Checkin = "2020-01-01";
-            booking.BookingDates.Checkout = "2021-01-01";
-            booking.AdditionalNeeds = "Breakfest";
+            bookingModel = new Booking();
+            bookingModel.FirstName = "John";
+            bookingModel.LastName = "Doe";
+            bookingModel.TotalPrice = 1110;
+            bookingModel.DepositPaid = true;
+            bookingModel.BookingDates.Checkin = "2020-01-01";
+            bookingModel.BookingDates.Checkout = "2021-01-01";
+            bookingModel.AdditionalNeeds = "Breakfest";
 
-            client.AddJsonBody(booking);
+            client.AddJsonBody(bookingModel);
 
             client.Execute();
 

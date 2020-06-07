@@ -1,49 +1,37 @@
 ﻿using Xunit;
-using RestSharpTests.ClientHelper;
-using RestSharpTests.Entities.RestfulBooker;
-using RestSharpTests.Helpers;
 
 namespace RestSharpTests.Tests.RestfulBooker
 {
-    public class AuthenticationTests
+    public class AuthenticationTests : BaseTests
     {
-
-        private const string APIurl = "https://restful-booker.herokuapp.com/auth";
-        private readonly APIClient client;
-        private readonly Authentication auth;
-        ResponseSearch responseSearch = new ResponseSearch();
 
         public AuthenticationTests()
         {
-            client = new APIClient();
-            auth = new Authentication();
-            responseSearch = new ResponseSearch();
-
             // Set the API endpoint and request method;
-            client.Url = APIurl;
-            client.Method = "POST";
+            HttpClient.Url = TestUrl.Auth;
+            HttpClient.Method = "POST";
 
             // Set the Header information;
-            client.AddHeader("Content-Type", "application/json");
+            HttpClient.AddHeader("Content-Type", "application/json");
         }
 
         [Fact]
         public void Authentication_RightCredentials_Post()
         {
             // Create object with credentials;
-            auth.Username = "admin";
-            auth.Password = "password123";
+            AuthModel.Username = "admin";
+            AuthModel.Password = "password123";
             
             // Add the Json Body;
-            client.AddJsonBody(auth);
+            HttpClient.AddJsonBody(AuthModel);
 
             // Execute the API request;
-            client.Execute();
+            HttpClient.Execute();
 
             // Verification;
-            Assert.Equal(200, client.ResponseStatusCode);
-            Assert.Equal("OK", client.ResponseStatusMsg);
-            string token = responseSearch.GetPropertyValue(client.ResponseContent, "token");
+            Assert.Equal(200, HttpClient.ResponseStatusCode);
+            Assert.Equal("OK", HttpClient.ResponseStatusMsg);
+            string token = Search.GetPropertyValue(HttpClient.ResponseContent, "token");
             Assert.NotNull(token);
         }
 
@@ -51,19 +39,19 @@ namespace RestSharpTests.Tests.RestfulBooker
         public void Authentication_BadCredentials_Post()
         {
             // Create object with credentials;
-            auth.Username = "admin";
-            auth.Password = "password12";
+            AuthModel.Username = "admin";
+            AuthModel.Password = "password12";
 
             // Add the Json Body;
-            client.AddJsonBody(auth);
+            HttpClient.AddJsonBody(AuthModel);
 
             // Execute the API request;
-            client.Execute();
+            HttpClient.Execute();
 
             // Verification;
-            Assert.Equal(200, client.ResponseStatusCode);
-            Assert.Equal("OK", client.ResponseStatusMsg);
-            string reason = responseSearch.GetPropertyValue(client.ResponseContent, "reason");
+            Assert.Equal(200, HttpClient.ResponseStatusCode);
+            Assert.Equal("OK", HttpClient.ResponseStatusMsg);
+            string reason = Search.GetPropertyValue(HttpClient.ResponseContent, "reason");
             Assert.Equal("Bad credentials", reason);
         }
 
@@ -71,13 +59,13 @@ namespace RestSharpTests.Tests.RestfulBooker
         public void Authentication_NoCredentials_Post()
         {
             // Execute the API request;
-            client.Execute();
+            HttpClient.Execute();
 
             // Verification;
-            Assert.Equal(200, client.ResponseStatusCode);
-            Assert.Equal("OK", client.ResponseStatusMsg);
+            Assert.Equal(200, HttpClient.ResponseStatusCode);
+            Assert.Equal("OK", HttpClient.ResponseStatusMsg);
 
-            string reason = responseSearch.GetPropertyValue(client.ResponseContent, "reason");
+            string reason = Search.GetPropertyValue(HttpClient.ResponseContent, "reason");
             Assert.Equal("Bad credentials", reason);
         }
 
