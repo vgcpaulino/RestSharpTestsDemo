@@ -1,0 +1,6 @@
+version: "3"
+
+services:
+  dot_net_core_restsharp:
+    container_name: dotNetCoreRestSharp
+    build: .
