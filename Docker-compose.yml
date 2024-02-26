@@ -3,6 +3,8 @@ version: "3"
 services:
   dot_net_core_restsharp:
     container_name: dotNetCoreRestSharp
-    build: .
-    volumes: 
-      - ./RestSharpTests/TestResults:/application/RestSharpTests/TestResults
+    build:
+      dockerfile: Dockerfile
+      context: .
+    # volumes: 
+    #   - ./RestSharpTests/TestResults:/application/RestSharpTests/TestResults

@@ -6,16 +6,15 @@ namespace RestSharpTests.ClientHelper
 {
     public partial class APIClient : CompareHelper
     {
-        private readonly RestClient restClient;
+        private RestClient restClient;
         private readonly RestRequest restRequest;
-        private IRestResponse restRespose;
+        private RestResponse restRespose;
 
         private readonly ConversionHelper conversion;
         private readonly ResponseSearch responseParser;
 
         public APIClient()
         {
-            restClient = new RestClient();
             restRequest = new RestRequest();
 
             conversion = new ConversionHelper();
@@ -46,7 +45,7 @@ namespace RestSharpTests.ClientHelper
 
         public void Execute()
         {
-            restClient.BaseUrl = new Uri(Url);
+            RestClientOptions options = new RestClientOptions(Url);
             restRequest.Method = APIMethods.GetMethodObj(Method);
             
             if (JsonBody != null && JsonBody != "")
@@ -54,6 +53,7 @@ namespace RestSharpTests.ClientHelper
                 restRequest.AddJsonBody(JsonBody);
             }
 
+            restClient = new RestClient(options);
             restRespose = restClient.Execute(restRequest);
             ResponseStatusCode = (int)restRespose.StatusCode;
             ResponseStatusMsg = restRespose.StatusDescription;

@@ -39,8 +39,8 @@ namespace RestSharpTests.Tests.RestfulBooker
 
             // Verification;
             Assert.Equal(418, HttpClient.ResponseStatusCode);
-            Assert.Equal("I'm a teapot", HttpClient.ResponseStatusMsg);
-            Assert.Equal("I'm a teapot", HttpClient.ResponseContent);
+            Assert.Equal("I'm a Teapot", HttpClient.ResponseStatusMsg);
+            Assert.Equal("I'm a Teapot", HttpClient.ResponseContent);
         }
 
         [Fact]
