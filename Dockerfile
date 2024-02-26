@@ -1,15 +1,20 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1
-
-# Copy local folder to the container:
-COPY . /application
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
 # Change the working dir folder:
 WORKDIR /application
 
-# CHANGE directory, restore the packages and build the project:
-RUN cd /application \
-    dotnet restore \
-    dotnet build
+# Copy Solution and Project files:
+COPY RestSharpTestsDemo.sln RestSharpTestsDemo.sln
+COPY RestSharpTests/RestSharpTests.csproj RestSharpTests/RestSharpTests.csproj
+
+# Restore packages:
+RUN  dotnet restore 
+
+# Copy source files:
+COPY . .
+
+# Build Solution:
+RUN dotnet build
     
 # Run tests:
 CMD [ "dotnet", "test", "--logger", "\"trx\"" ]

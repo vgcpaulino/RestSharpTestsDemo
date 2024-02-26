@@ -1,0 +1,3 @@
+RestSharpTests/bin/**/*
+RestSharpTests/obj/**/*
+RestSharpTests/TestResults/**/*
